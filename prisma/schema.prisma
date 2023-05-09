@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator kysely {
+  provider = "prisma-kysely"
+  output   = "../src/lib"
+  fileName = "types.ts"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+}
+
+model User {
+  id                        String           @id
+  email                     String           @unique
+  name                      String
+  password                  String
+  profession                String
+  institute                 String
+  location                  String
+  about                     String
+  dateOfBirth               Int
+  gender                    String
+  isFollowersVisible        Boolean
+  isOpenToWork              Boolean
+  isAchievementBadgeVisible Boolean
+  isXpPointsVisible         Boolean
+  githubUrl                 String
+  youtubeUrl                String
+  instagramUrl              String
+  facebookUrl               String
+  behanceUrl                String
+  dribbbleUrl               String
+  coverPictureUrl           String
+  profilePictureUrl         String
+  UserSkill                 UserSkill[]
+  UserEducation             UserEducation[]
+  UserExperience            UserExperience[]
+  UserPlayground            UserPlayground[]
+  UserInterest              UserInterest[]
+  UserProject               UserProject[]
+}
+
+model UserSkill {
+  id     String @id
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  name   String
+  rating String
+}
+
+model UserEducation {
+  id          String @id
+  userId      String
+  user        User   @relation(fields: [userId], references: [id])
+  degreeType  String
+  collegeName String
+  startDate   Int
+  endDate     Int
+  description String
+}
+
+model UserExperience {
+  id          String @id
+  userId      String
+  user        User   @relation(fields: [userId], references: [id])
+  jobTitle    String
+  companyName String
+  jobLocation String
+  startDate   Int
+  endDate     Int
+  description String
+}
+
+enum PlaygroundLanguage {
+  Html
+  React
+  NextJs
+}
+
+model UserPlayground {
+  id         String             @id
+  userId     String
+  user       User               @relation(fields: [userId], references: [id])
+  title      String
+  language   PlaygroundLanguage
+  createdAt  Int
+  isSelected Boolean
+}
+
+model UserProject {
+  id           String   @id
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  title        String
+  imageUrl     String
+  imageAltText String
+  tags         String[]
+  createdAt    Int
+  isSelected   Boolean
+}
+
+model UserInterest {
+  id       String @id
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  interest String
+}
